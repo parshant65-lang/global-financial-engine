@@ -1,0 +1,110 @@
+name: Autonomous Global Financial Harvester
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: global-financial-harvest
+  cancel-in-progress: false
+
+jobs:
+  harvest-moneycontrol:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout Engine
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Moneycontrol Harvest Cycles
+        env:
+          VAULT_PAT: ${{ secrets.VAULT_PAT }}
+        run: |
+          echo "Starting Moneycontrol harvest loops..."
+          for i in {1..3}; do
+            echo "=== Moneycontrol Loop $i ==="
+            python3 harvest_moneycontrol.py || echo "Cycle $i completed or warning"
+            sleep 2
+          done
+
+  harvest-cnbc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout Engine
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute CNBC Harvest Cycles
+        env:
+          VAULT_PAT: ${{ secrets.VAULT_PAT }}
+        run: |
+          echo "Starting CNBC harvest loops..."
+          for i in {1..3}; do
+            echo "=== CNBC Loop $i ==="
+            python3 harvest_cnbc.py || echo "Cycle $i completed or warning"
+            sleep 2
+          done
+
+  harvest-fortune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout Engine
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Fortune Harvest Cycles
+        env:
+          VAULT_PAT: ${{ secrets.VAULT_PAT }}
+        run: |
+          echo "Starting Fortune harvest loops..."
+          for i in {1..5}; do
+            echo "=== Fortune Loop $i ==="
+            python3 harvest_fortune.py || echo "Cycle $i completed or warning"
+            sleep 2
+          done
+
+  retrigger:
+    needs: [harvest-moneycontrol, harvest-cnbc, harvest-fortune]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Continuous Chain
+        env:
+          GH_TOKEN: ${{ secrets.VAULT_PAT }}
+        run: |
+          echo "Triggering next cycle of Global Financial Engine..."
+          gh workflow run harvest_global.yml --repo parshant65-lang/global-financial-engine || true
