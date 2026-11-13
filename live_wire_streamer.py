@@ -14,11 +14,16 @@ from datetime import datetime, timezone
 GITHUB_USER = "parshant65-lang"
 VAULT_NAME = "live-financial-wire-vault"
 
-# 15 Verified Live Feeds
+# 20 Verified Live Feeds (World-Class Financial Wire)
 FEEDS = [
     {"source": "Google News World Business", "url": "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en"},
     {"source": "Google News India Business", "url": "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en"},
+    {"source": "Bloomberg Live Wire", "url": "https://news.google.com/rss/search?q=when:1h+source:bloomberg&hl=en-US&gl=US&ceid=US:en"},
+    {"source": "Reuters Live Wire", "url": "https://news.google.com/rss/search?q=when:1h+source:reuters&hl=en-US&gl=US&ceid=US:en"},
+    {"source": "WSJ Real-Time Wire", "url": "https://news.google.com/rss/search?q=when:1h+source:wall-street-journal&hl=en-US&gl=US&ceid=US:en"},
     {"source": "MarketWatch Real-Time", "url": "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines"},
+    {"source": "Techmeme Tech Breaking", "url": "https://www.techmeme.com/feed.xml"},
+    {"source": "OilPrice Global Energy", "url": "https://oilprice.com/rss/main"},
     {"source": "PR Newswire Financial", "url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss"},
     {"source": "Economic Times Markets", "url": "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms"},
     {"source": "Economic Times Economy", "url": "https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms"},
