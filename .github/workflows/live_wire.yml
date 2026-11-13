@@ -1,0 +1,46 @@
+name: Real-Time World Financial News Wire
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: live-financial-wire
+  cancel-in-progress: false
+
+jobs:
+  stream-wire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Engine
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Execute Live Streaming Cycles
+        env:
+          VAULT_PAT: ${{ secrets.VAULT_PAT }}
+        run: |
+          echo "Starting Real-Time Global Wire Ingestion..."
+          for i in {1..4}; do
+            echo "--- Wire Polling Cycle $i ---"
+            python3 live_wire_streamer.py || echo "Cycle $i completed"
+            sleep 60
+          done
+
+  retrigger:
+    needs: [stream-wire]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrigger Live Wire Loop
+        env:
+          GH_TOKEN: ${{ secrets.VAULT_PAT }}
+        run: |
+          echo "Triggering next Live Wire cycle..."
+          gh workflow run live_wire.yml --repo parshant65-lang/global-financial-engine || true
