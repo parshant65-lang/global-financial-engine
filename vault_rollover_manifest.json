@@ -1,0 +1,16 @@
+{
+  "stream_id": "live-financial-wire",
+  "base_vault_name": "live-financial-wire-vault",
+  "active_vault": "live-financial-wire-vault",
+  "active_index": 1,
+  "max_size_mb": 450,
+  "max_articles": 400000,
+  "rollover_history": [
+    {
+      "vault": "live-financial-wire-vault",
+      "index": 1,
+      "started_at": "2026-11-13T09:30:00Z",
+      "status": "ACTIVE"
+    }
+  ]
+}

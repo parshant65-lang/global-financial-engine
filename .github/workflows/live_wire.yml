@@ -9,6 +9,9 @@ concurrency:
   group: live-financial-wire
   cancel-in-progress: false
 
+permissions:
+  contents: write
+
 jobs:
   stream-wire:
     runs-on: ubuntu-latest
@@ -22,9 +25,14 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
       - name: Execute Live Streaming Cycles
         env:
           VAULT_PAT: ${{ secrets.VAULT_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Starting Real-Time Global Wire Ingestion..."
           for i in {1..4}; do
@@ -32,6 +40,14 @@ jobs:
             python3 live_wire_streamer.py || echo "Cycle $i completed"
             sleep 60
           done
+
+      - name: Commit Manifest Updates (if rollover occurred)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add vault_rollover_manifest.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "[VAULT-ROLLOVER] Update active vault manifest [skip ci]" && git push)
+
 
   retrigger:
     needs: [stream-wire]
