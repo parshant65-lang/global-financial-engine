@@ -19,7 +19,9 @@ WORKER_THREADS = 10
 
 VAULT_MAP = [
     {"name": "cnbc-vault-1", "start_vol": 1, "end_vol": 7},
-    {"name": "cnbc-vault-2", "start_vol": 8, "end_vol": 13}
+    {"name": "cnbc-vault-2", "start_vol": 8, "end_vol": 13},
+    {"name": "cnbc-vault-3", "start_vol": 14, "end_vol": 19},
+    {"name": "cnbc-vault-4", "start_vol": 20, "end_vol": 25}
 ]
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
